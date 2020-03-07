@@ -44,12 +44,14 @@ function SWEP:Success(ent)
 	self.Owner:setBottomMessage("Hacking Done!")
 end
 
-function SWEP:Failure(fail)
+function SWEP:Failure(fail) -- True if failed by canceling hacking process, false if hacking is limited
 	self.isHacking = false
-	if fail then
+	if fail == 1 then
 		self.Owner:setBottomMessage("Hacking FAILED!")
+	elseif fail == 2 then
+		self.Owner:setBottomMessage("Hacking limited to LVL " .. hackingdevice_hack_max:GetInt() .. " Keycard")
 	else
-		self.Owner:setBottomMessage("Hacking limited to LVL " .. hackingdevice_hack_max:GetInt() .. " Doors")
+		self.Owner:setBottomMessage("Can't hack this!")
 	end
 end
 
@@ -57,15 +59,17 @@ function SWEP:PrimaryAttack()
     local tr = self.Owner:GetEyeTrace()
 	local ent = tr.Entity
 	local trLVL = ent:GetNWInt( "GuthSCP:LVL", 0 )
-	if IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL <= hackingdevice_hack_max:GetInt() then
+	if IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL <= hackingdevice_hack_max:GetInt() and not GuthSCP.exceptionButtonID[game.GetMap()][ent:MapCreationID()] then
 		self.Owner:setBottomMessage("Hacking Started!")
         self.isHacking = true
         self.startHack = CurTime()
 		self.endHack = CurTime() + ent:GetNWInt( "GuthSCP:LVL", 0 )*hackingdevice_hack_time:GetInt()
 		self.Weapon:SetNextPrimaryFire(CurTime()+3)
 		print()
+	elseif GuthSCP.exceptionButtonID[game.GetMap()][ent:MapCreationID()] then
+		self:Failure(3)
 	elseif IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL ~= 0 and trLVL > hackingdevice_hack_max:GetInt() then
-		self:Failure(false)
+		self:Failure(2)
 	end
 end
 
@@ -83,7 +87,7 @@ function SWEP:Think()
 	if self.isHacking and IsValid(self.Owner) then
 		local tr = self.Owner:GetEyeTrace()	
 		if not IsValid(tr.Entity) or tr.HitPos:Distance(self.Owner:GetShootPos()) > 50 or not GuthSCP.keycardAvailableClass[ ent:GetClass() ] then
-			self:Failure(true)
+			self:Failure(1)
 		elseif self.endHack <= CurTime() then
 			self:Success(tr.Entity)
 		end
