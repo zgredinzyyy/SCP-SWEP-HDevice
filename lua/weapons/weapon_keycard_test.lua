@@ -35,8 +35,16 @@ SWEP.ShowWorldModel = false
 
 SWEP.GuthSCPLVL       		= 0 -- Starting with 0 so player can't open doors without hacking and let keycard system asociate this SWEP with keycard
 
+-- This addon requires https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401 || Again big thanks to Guthen for this awesome addon and opportunity to make this one possible
+
 local hackingdevice_hack_time = CreateConVar("hdevice_hack_time", "5", {FCVAR_ARCHIVE}, "Amount of seconds needed for hacking device to open certain door.")
 local hackingdevice_hack_max = CreateConVar("hdevice_hack_max", "5", {FCVAR_ARCHIVE}, "Highest level that the device can crack.")
+
+function SWEP:Initialize()
+	if not GuthSCP then
+		self.Owner:ChatPrint( "HDevice - Guthen Keycard System not found, HDevice won't work without it." )
+	end
+end
 
 function SWEP:Success(ent)
 	self.isHacking = false
@@ -44,7 +52,7 @@ function SWEP:Success(ent)
 	self.Owner:setBottomMessage("Hacking Done!")
 end
 
-function SWEP:Failure(fail) -- True if failed by canceling hacking process, false if hacking is limited
+function SWEP:Failure(fail) -- 1 = Moved mouse, moved too far, 2 = Hacking limited to certain LVL, else = Button blocked
 	self.isHacking = false
 	if fail == 1 then
 		self.Owner:setBottomMessage("Hacking FAILED!")
@@ -56,9 +64,13 @@ function SWEP:Failure(fail) -- True if failed by canceling hacking process, fals
 end
 
 function SWEP:PrimaryAttack()
+
     local tr = self.Owner:GetEyeTrace()
 	local ent = tr.Entity
-	local trLVL = ent:GetNWInt( "GuthSCP:LVL", 0 )
+	local trLVL = ent:GetNWInt( "GuthSCP:LVL", 0 ) -- Door req LVL
+
+	if not GuthSCP then return end -- If no Base Guthen Keycard sys = end
+
 	if IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL <= hackingdevice_hack_max:GetInt() and not GuthSCP.exceptionButtonID[game.GetMap()][ent:MapCreationID()] then
 		self.Owner:setBottomMessage("Hacking Started!")
         self.isHacking = true
@@ -66,10 +78,13 @@ function SWEP:PrimaryAttack()
 		self.endHack = CurTime() + ent:GetNWInt( "GuthSCP:LVL", 0 )*hackingdevice_hack_time:GetInt()
 		self.Weapon:SetNextPrimaryFire(CurTime()+3)
 		print()
+
 	elseif GuthSCP.exceptionButtonID[game.GetMap()][ent:MapCreationID()] then
 		self:Failure(3)
+
 	elseif IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL ~= 0 and trLVL > hackingdevice_hack_max:GetInt() then
 		self:Failure(2)
+
 	end
 end
 
@@ -102,12 +117,12 @@ end
 
 function SWEP:DrawHUD()
     local ply = self.Owner
-    if not IsValid( ply ) or not ply:Alive() then return end
+	if not IsValid( ply ) or not ply:Alive() then return end
 
 	local trg = ply:GetEyeTrace().Entity
 	local tr = self.Owner:GetEyeTrace()
-    if not IsValid( trg ) then return end
-	if not GuthSCP.keycardAvailableClass[ trg:GetClass() ] then return end
+	if not IsValid( trg ) then return end
+	if not GuthSCP then return end
 	
     if trg:GetNWInt( "GuthSCP:LVL", 0 ) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 then
 		draw.SimpleText( "Keycard LVL Required: " .. trg:GetNWInt( "GuthSCP:LVL", 0 ), "ChatFont", ScrW()/2+50, ScrH()/2, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )

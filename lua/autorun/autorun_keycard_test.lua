@@ -48,7 +48,7 @@ hook.Add( "PlayerInitialSpawn", "HDevice:GetIDs", function()
         local txt = file.Read( "guth_scp/hdevice_blocked_buttons.txt", "DATA" )
         exceptionButtonID = util.JSONToTable( txt )
         GuthSCP.exceptionButtonID = exceptionButtonID
-        print( "HDevice - Button IDs loaded !" )
+        print( "HDevice - Buttons IDs loaded!" )
     end
 
 	hook.Remove( "PlayerInitialSpawn", "HDevice:GetIDs" )
