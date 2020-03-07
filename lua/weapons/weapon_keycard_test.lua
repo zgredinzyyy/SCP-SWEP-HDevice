@@ -84,16 +84,6 @@ function SWEP:Think()
 		local tr = self.Owner:GetEyeTrace()	
 		if not IsValid(tr.Entity) or tr.HitPos:Distance(self.Owner:GetShootPos()) > 50 or not GuthSCP.keycardAvailableClass[ ent:GetClass() ] then
 			self:Failure(true)
-		elseif self.endHack > CurTime() then
-			hook.Add("HUDPaint", "k", function()
-				local scrW,scrH = ScrW(), ScrH()
-				local boxW = scrW * .1
-				local boxH = scrH * .02
-				surface.SetDrawColor(0, 0, 0, 200)
-				surface.DrawRect(scrW/2-boxW/2, scrH-boxH*1.1, boxW, boxH)
-				surface.SetDrawColor(255, 0, 0, 200)
-				surface.DrawRect(scrW/2-boxW/2, scrH-boxH*1.1, boxW, boxH)
-			end)
 		elseif self.endHack <= CurTime() then
 			self:Success(tr.Entity)
 		end
