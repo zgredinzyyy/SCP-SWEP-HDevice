@@ -55,6 +55,7 @@ SWEP.WElements = {
 -- TODO Superadmin req for convars
 -- TODO Check server
 -- TODO Server models
+-- TODO Add screens
 
 local hackingdevice_hack_time = CreateConVar("hdevice_hack_time", "5", {FCVAR_ARCHIVE}, "Amount of seconds needed for hacking device to open certain door.")
 local hackingdevice_hack_max = CreateConVar("hdevice_hack_max", "5", {FCVAR_ARCHIVE}, "Highest level that the device can crack.")
