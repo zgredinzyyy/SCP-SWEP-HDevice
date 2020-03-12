@@ -50,12 +50,18 @@ if SERVER then
 end
 
 hook.Add( "PlayerInitialSpawn", "HDevice:GetIDs", function()
-    if file.Exists( "guth_scp/hdevice_blocked_buttons.txt", "DATA" ) then
+	
+	if not GuthSCP then
+		print("HDevice - Guthen Keycard System not found, HDevice won't work without it.")
+		return
+	end	
+	
+	if file.Exists( "guth_scp/hdevice_blocked_buttons.txt", "DATA" ) then
         local txt = file.Read( "guth_scp/hdevice_blocked_buttons.txt", "DATA" )
         exceptionButtonID = util.JSONToTable( txt )
         GuthSCP.exceptionButtonID = exceptionButtonID
 		print( "HDevice - Buttons IDs loaded!" )
-    end
+	end
 
 	hook.Remove( "PlayerInitialSpawn", "HDevice:GetIDs" )
 end )

@@ -27,11 +27,13 @@ SWEP.DrawCrosshair		    = true
 SWEP.ViewModel			    = "models/weapons/v_grenade.mdl"
 SWEP.WorldModel			    = "models/weapons/w_grenade.mdl"
 
-SWEP.HoldType = "slam"
+SWEP.ShouldDropOnDie 		= false
 
-SWEP.UseHands = false
-SWEP.ShowViewModel = false
-SWEP.ShowWorldModel = false
+SWEP.HoldType 				= "slam"
+
+SWEP.UseHands 				= false
+SWEP.ShowViewModel 			= false
+SWEP.ShowWorldModel 		= false
 
 SWEP.GuthSCPLVL       		= 0 -- Starting with 0 so player can't open doors without hacking and let keycard system asociate this SWEP with keycard
 
@@ -41,7 +43,7 @@ SWEP.ViewModelBoneMods = {
 }
 
 SWEP.VElements = {
-	["viewcard"] = { type = "Model", model = "models/props/hdevice/hdevice.mdl", bone = "ValveBiped.Grenade_body", rel = "", pos = Vector(-0.576, 1.379, -2.11), angle = Angle(-153.118, -157.793, -167.144), size = Vector(0.95, 0.95, 0.95), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	["viewcard"] = { type = "Model", model = "models/props/hdevice/hdevice.mdl", bone = "ValveBiped.Grenade_body", rel = "", pos = Vector(0.551, 2, -3.708), angle = Angle(-149.308, 89.911, 129.485), size = Vector(0.95, 0.95, 0.95), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 }
 
 SWEP.WElements = {
@@ -50,7 +52,9 @@ SWEP.WElements = {
 
 -- This addon requires https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401 || Again big thanks to Guthen for this awesome addon and opportunity to make this one possible
 
--- TODO Add hack progress bar
+-- TODO Superadmin req for convars
+-- TODO Check server
+-- TODO Server models
 
 local hackingdevice_hack_time = CreateConVar("hdevice_hack_time", "5", {FCVAR_ARCHIVE}, "Amount of seconds needed for hacking device to open certain door.")
 local hackingdevice_hack_max = CreateConVar("hdevice_hack_max", "5", {FCVAR_ARCHIVE}, "Highest level that the device can crack.")
