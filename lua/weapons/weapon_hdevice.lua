@@ -52,19 +52,17 @@ SWEP.WElements = {
 
 -- This addon requires https://steamcommunity.com/sharedfiles/filedetails/?id=1781514401 || Again big thanks to Guthen for this awesome addon and opportunity to make this one possible
 
--- TODO Superadmin req for convars
--- TODO Check server
--- TODO Server models
 -- TODO Add screens
+-- TODO Repair sounds
 
-local hackingdevice_hack_time = CreateConVar("hdevice_hack_time", "5", {FCVAR_ARCHIVE}, "Amount of seconds needed for hacking device to open certain door.")
-local hackingdevice_hack_max = CreateConVar("hdevice_hack_max", "5", {FCVAR_ARCHIVE}, "Highest level that the device can crack.")
+local hackingdevice_hack_time = CreateConVar("hdevice_hack_time", "5", {FCVAR_REPLICATED,FCVAR_ARCHIVE}, "Amount of seconds needed for hacking device to open certain door.")
+local hackingdevice_hack_max = CreateConVar("hdevice_hack_max", "5", {FCVAR_REPLICATED,FCVAR_ARCHIVE}, "Highest level that the device can crack.")
 
 function SWEP:Success(ent)
 	self.isHacking = false
 	self.Owner:setBottomMessage("Hacking Done!")
 	ent:Use(self.Owner,ent,4,1) -- Opening Doors
-	self.Weapon:EmitSound("ambient/energy/spark1.wav", 60, 100, 1, CHAN_AUTO)
+	--self:EmitSound("hdevice/endspark.wav") -- Sounds exported from HL2
 end
 
 function SWEP:Open(ent)
@@ -97,7 +95,7 @@ function SWEP:PrimaryAttack()
 		self:Open(ent)
 
 	elseif IsValid(tr.Entity) and tr.HitPos:Distance(self.Owner:GetShootPos()) < 50 and trLVL <= hackingdevice_hack_max:GetInt() and not GuthSCP.exceptionButtonID[game.GetMap()][ent:MapCreationID()] then
-		self.Weapon:EmitSound("ambient/machines/keyboard7_clicks_enter.wav", 60, 100, 1, CHAN_AUTO)
+		--self:EmitSound("hdevice/startpress.wav", 60, 100, 1, CHAN_AUTO)
 		self.Owner:setBottomMessage("Hacking Started!")
         self.isHacking = true
 		self.startHack = CurTime()

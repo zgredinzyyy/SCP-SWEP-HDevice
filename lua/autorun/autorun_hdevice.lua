@@ -7,6 +7,13 @@ local exceptionButtonID = exceptionButtonID or
 	-- [1783] = true,
 }
 
+if not file.Exists( "guth_scp", "DATA" ) then file.CreateDir( "guth_scp" ) end
+
+if file.Exists( "guth_scp", "DATA") and not file.Exists("hdevice_blocked_buttons.txt", "DATA/guth_scp")then
+	exceptionButtonID[game.GetMap()] = {}
+	file.Write( "guth_scp/hdevice_blocked_buttons.txt", util.TableToJSON( exceptionButtonID ) )
+end
+
 if SERVER then
     concommand.Add( "hdevice_block_button", function( ply )
 		if not ply:IsValid() or not ply:IsSuperAdmin() then return end
